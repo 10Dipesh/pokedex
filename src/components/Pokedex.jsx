@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import PokemonList from "./PokemonList";
 import Pagenation from "./Pagenation";
 import PokemonCard from "./PokemonCard";
 import { getPokemonList } from "../services";
@@ -13,6 +12,7 @@ const Pokedex = () => {
   const [nextPageUrl, setNextPageUrl] = useState();
   const [prevPageUrl, setPrevPageUrl] = useState();
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -32,12 +32,27 @@ const Pokedex = () => {
     setCurrentPageUrl(prevPageUrl);
   }
 
+  const onChangeSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+  };
+
+  const filteredPokemon = pokemonList.filter((pokemon) =>
+    pokemon.name.toLowerCase().includes(searchQuery)
+  );
+
   if (loading) return "Loading....";
 
   return (
     <>
+      <input
+        type="text"
+        className="searchBar"
+        placeholder="Search"
+        onChange={onChangeSearch}
+      />
       <div className="mainDiv">
-        {pokemonList.map((pokemonFetchInfo) => (
+        {filteredPokemon.map((pokemonFetchInfo) => (
           <PokemonCard
             pokemonFetchInfo={pokemonFetchInfo}
             key={pokemonFetchInfo.name}
