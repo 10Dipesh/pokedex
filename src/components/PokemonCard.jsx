@@ -5,27 +5,35 @@ import PokemonTabs from "./PokemonTabs";
 export default function PokemonCard({ pokemonFetchInfo }) {
   const [pokemon, setPokemon] = useState(null);
   const [modal, setModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleModal = () => {
     setModal(!modal);
   };
 
-  const { name } = pokemonFetchInfo;
   useEffect(() => {
+    const { name } = pokemonFetchInfo;
     getPokemon(name).then((pokemon) => {
       setPokemon(pokemon);
+      setIsLoading(false);
     });
   }, []);
 
-  // if (!pokemon) {
-  //   return <></>;
-  // }
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
+
   return (
     <>
       <div>
         <div className="pokemonCard" onClick={toggleModal}>
           <img src={pokemon?.photo} alt={pokemon?.name} />
           <p>{pokemon?.name}</p>
+          <ul>
+            {pokemon?.types.map((t) => (
+              <li key={t.type.name}>{t.type.name}</li>
+            ))}
+          </ul>
         </div>
       </div>
       {modal && (
